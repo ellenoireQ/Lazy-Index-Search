@@ -5,6 +5,7 @@
 
 std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name, Config &config)
 {
+    std::vector<fs::path> results;
     std::error_code ec;
 
     if (!fs::exists(directory, ec) || !fs::is_directory(directory, ec))
@@ -24,7 +25,12 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
         if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
         {
             LOG(CLR_RED, current);
-            return current;
+            results.push_back(current);
+
+            if (it == end_it)
+            {
+                return current;
+            }
         }
         else
         {
@@ -38,6 +44,13 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
         }
     }
 
+    /**
+     * Iterate results
+     */
+    for (auto res : results)
+    {
+        LOG(CLR_RED, res);
+    }
     return std::nullopt;
 }
 
