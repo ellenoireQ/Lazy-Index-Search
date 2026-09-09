@@ -2,10 +2,12 @@
 #include <string>
 #include <includes/command.hpp>
 #include <includes/engine.hpp>
+#include <includes/config.hpp>
 
 int main(int argc, char *argv[])
 {
     CommandArgs args = parseArguments(argc, argv);
+    Config config;
 
     if (argc < 2 || args.command == UNKNOWN)
     {
@@ -23,7 +25,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        engine::search(args.searchPath, args.query);
+        engine::search(args.searchPath, args.query, config);
         return 0;
 
     case HELP:

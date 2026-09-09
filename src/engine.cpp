@@ -3,7 +3,7 @@
 #include <system_error>
 #include <includes/log.hpp>
 
-std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name)
+std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name, Config &config)
 {
     std::error_code ec;
 
