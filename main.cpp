@@ -5,35 +5,35 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2)
+    CommandArgs args = parseArguments(argc, argv);
+
+    if (argc < 2 || args.command == UNKNOWN)
     {
-        std::cout << "Usage: " << argv[0] << " [--find|-f] <query>\n";
+        displayHelp(argv[0]);
         return 1;
     }
 
-    const std::string command = argv[1];
-
-    switch (parseCommand(command))
+    switch (args.command)
     {
     case FIND:
-        if (argc < 3)
+        if (args.query.empty())
         {
-            std::cout << "Missing search query.\n";
-            std::cout << "Usage: " << argv[0] << " [--find|-f] <query>\n";
+            std::cout << "Error: Missing search query.\n\n";
+            displayHelp(argv[0]);
             return 1;
         }
 
-        engine::search("/", argv[2]);
+        engine::search(args.searchPath, args.query);
         return 0;
 
     case HELP:
-        std::cout << "Usage: " << argv[0] << " [--find|-f] <query>\n";
+        displayHelp(argv[0]);
         return 0;
 
     case UNKNOWN:
     default:
-        std::cout << "Unknown command: " << command << "\n";
-        std::cout << "Usage: " << argv[0] << " [--find|-f] <query>\n";
+        std::cout << "Unknown command.\n\n";
+        displayHelp(argv[0]);
         return 1;
     }
 }
