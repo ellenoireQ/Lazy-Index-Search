@@ -38,12 +38,6 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
         }
     }
 
-    const auto paths = engine::_sort_path(directory);
-    for (const auto &path : paths)
-    {
-        std::cout << path << std::endl;
-    }
-
     return std::nullopt;
 }
 
