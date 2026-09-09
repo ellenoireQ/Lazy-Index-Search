@@ -1,6 +1,7 @@
 #include <includes/engine.hpp>
 #include <functional>
 #include <system_error>
+#include <includes/log.hpp>
 
 void engine::search(const fs::path &directory, const fs::path &file_name)
 {
@@ -22,8 +23,12 @@ void engine::search(const fs::path &directory, const fs::path &file_name)
 
         if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
         {
-            std::cout << current << '\n';
+            LOG(CLR_RED, current);
             return;
+        }
+        else
+        {
+            LOG(CLR_WHITE, current);
         }
 
         if (entry_ec)
