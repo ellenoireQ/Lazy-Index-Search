@@ -1,34 +1,42 @@
 #include <includes/engine.hpp>
 #include <functional>
+#include <system_error>
 
 void engine::search(const fs::path &directory, const fs::path &file_name)
 {
-    bool found = false;
-    if (!fs::exists(directory) || !fs::is_directory(directory))
+    std::error_code ec;
+
+    if (!fs::exists(directory, ec) || !fs::is_directory(directory, ec))
     {
         std::cout << "Directory not found: " << directory << std::endl;
         return;
     }
 
-    auto it = fs::recursive_directory_iterator(directory, fs::directory_options::skip_permission_denied);
+    auto it = fs::recursive_directory_iterator(directory, fs::directory_options::skip_permission_denied, ec);
     auto end_it = fs::recursive_directory_iterator();
 
     for (; it != end_it; ++it)
     {
-        if (it->path().filename() == file_name)
+        std::error_code entry_ec;
+        const auto current = it->path();
+
+        if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
         {
-            std::cout << it->path() << '\n';
-            found = true;
+            std::cout << current << '\n';
+            return;
+        }
+
+        if (entry_ec)
+        {
+            entry_ec.clear();
+            it.disable_recursion_pending();
         }
     }
 
-    if (found == false)
+    const auto paths = engine::_sort_path(directory);
+    for (const auto &path : paths)
     {
-        const auto paths = engine::_sort_path(directory);
-        for (const auto &path : paths)
-        {
-            std::cout << path << std::endl;
-        }
+        std::cout << path << std::endl;
     }
 }
 
@@ -38,18 +46,30 @@ std::vector<fs::path> engine::_sort_path(const fs::path &p)
 
     std::function<void(const fs::path &)> walk = [&](const fs::path &current)
     {
-        paths.push_back(current);
-
-        if (!fs::exists(current) || !fs::is_directory(current))
+        std::error_code ec;
+        if (!fs::exists(current, ec) || !fs::is_directory(current, ec))
         {
             return;
         }
 
-        for (const auto &entry : fs::directory_iterator(current))
+        paths.push_back(current);
+
+        for (const auto &entry : fs::directory_iterator(current, fs::directory_options::skip_permission_denied, ec))
         {
-            if (entry.is_directory())
+            if (ec)
+            {
+                ec.clear();
+                continue;
+            }
+
+            std::error_code is_dir_ec;
+            if (entry.is_directory(is_dir_ec) && !is_dir_ec)
             {
                 walk(entry.path());
+            }
+            else
+            {
+                is_dir_ec.clear();
             }
         }
     };
