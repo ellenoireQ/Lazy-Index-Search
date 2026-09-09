@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(lis_lib STATIC 
     "src/find.cpp"
     "src/engine.cpp"
+    "src/config.cpp"
 )
 
 
