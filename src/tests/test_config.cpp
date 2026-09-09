@@ -1,23 +1,20 @@
+#include <catch2/catch_test_macros.hpp>
 #include <includes/config.hpp>
-#include <cassert>
 
-int main()
+TEST_CASE("Config stores and returns values", "[config]")
 {
     Config cfg;
 
-    /**
-     * TEST
-     * Set testing-config value
-     */
+    cfg.set("testing-config", true);
+    REQUIRE(cfg.get("testing-config") == true);
+}
+
+TEST_CASE("Config returns false after removing a value", "[config]")
+{
+    Config cfg;
+
     cfg.set("testing-config", true);
 
-    assert(cfg.get("testing-config") == true);
-
-    /**
-     * TEST
-     * Remove testing-config value
-     */
     cfg.remove("testing-config");
-
-    assert(cfg.get("testing-config") == true);
+    REQUIRE(cfg.get("testing-config") == false);
 }
