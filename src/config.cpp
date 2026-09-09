@@ -1,11 +1,11 @@
 #include <includes/config.hpp>
 
-void config::Config::set(const char *__cfg, bool state)
+void Config::set(const char *__cfg, bool state)
 {
     this->cfg.emplace(__cfg, state);
 }
 
-bool config::Config::get(const char *__key)
+bool Config::get(const char *__key)
 {
     auto it = this->cfg.find(__key);
 
@@ -16,7 +16,7 @@ bool config::Config::get(const char *__key)
     return false;
 }
 
-void config::Config::remove(const char *__key)
+void Config::remove(const char *__key)
 {
     auto it = this->cfg.find(__key);
 
