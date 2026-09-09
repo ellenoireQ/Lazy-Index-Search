@@ -20,6 +20,5 @@ namespace fs = std::filesystem;
 namespace engine
 {
     std::optional<fs::path> search(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path);
-    std::vector<fs::path> _sort_path(const fs::path &p);
 }
 #endif // ENGINE_HPP
