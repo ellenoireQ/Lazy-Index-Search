@@ -12,7 +12,7 @@ TEST_CASE("Engine search returns the matching file", "[engine]")
     std::ofstream(root / "nested" / "file.cpp");
     Config config;
 
-    const auto result = engine::search(root, "file.cpp", config);
+    const auto result = engine::search(root, "file.cpp", config, std::nullopt);
 
     if (result.has_value())
     {
@@ -36,7 +36,7 @@ TEST_CASE("Engine search returns no result when the file is missing", "[engine]"
     std::filesystem::create_directories(root);
     Config config;
 
-    const auto result = engine::search(root, "missing.cpp", config);
+    const auto result = engine::search(root, "missing.cpp", config, std::nullopt);
 
     REQUIRE_FALSE(result.has_value());
     std::filesystem::remove_all(root);
@@ -48,7 +48,7 @@ TEST_CASE("Engine search returns no result for a missing directory", "[engine]")
     std::filesystem::remove_all(missing);
     Config config;
 
-    REQUIRE_FALSE(engine::search(missing, "file.cpp", config).has_value());
+    REQUIRE_FALSE(engine::search(missing, "file.cpp", config, std::nullopt).has_value());
 }
 
 TEST_CASE("Engine sorts nested directories", "[engine]")

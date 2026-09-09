@@ -3,7 +3,7 @@
 #include <system_error>
 #include <includes/log.hpp>
 
-std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name, Config &config)
+std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path)
 {
     std::vector<fs::path> results;
     std::error_code ec;
@@ -34,6 +34,16 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
         }
         else
         {
+
+            std::vector<std::string> nulls;
+            for (const auto &ex_path : exclude_path.value_or(nulls))
+            {
+                if (current == ex_path)
+                {
+                    it.disable_recursion_pending();
+                    continue;
+                }
+            }
             LOG(CLR_WHITE, current);
         }
 

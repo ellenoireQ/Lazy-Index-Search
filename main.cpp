@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        engine::search(args.searchPath, args.query, config);
+        engine::search(args.searchPath, args.query, config, args.excludePaths);
         return 0;
 
     case HELP:
