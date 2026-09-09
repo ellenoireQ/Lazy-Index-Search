@@ -40,7 +40,7 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
             {
                 if (current == ex_path)
                 {
-                    it.disable_recursion_pending();
+                    block(it);
                     continue;
                 }
             }
@@ -50,7 +50,7 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
         if (entry_ec)
         {
             entry_ec.clear();
-            it.disable_recursion_pending();
+            block(it);
         }
     }
 

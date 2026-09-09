@@ -20,5 +20,11 @@ namespace fs = std::filesystem;
 namespace engine
 {
     std::optional<fs::path> search(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path);
+    /**
+     * Block the current directory iterator to skip recursion into it
+     */
+    void block(const fs::recursive_directory_iterator & it){
+        it.disable_recursion_pending();
+    }
 }
 #endif // ENGINE_HPP
