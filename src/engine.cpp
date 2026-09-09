@@ -27,7 +27,7 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
             LOG(CLR_RED, current);
             results.push_back(current);
 
-            if (it == end_it)
+            if (it == end_it || results.size() <= 2)
             {
                 return current;
             }
