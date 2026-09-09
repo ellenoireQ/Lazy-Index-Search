@@ -23,7 +23,8 @@ namespace engine
     /**
      * Block the current directory iterator to skip recursion into it
      */
-    void block(const fs::recursive_directory_iterator & it){
+    static inline void block(fs::recursive_directory_iterator &it)
+    {
         it.disable_recursion_pending();
     }
 }
