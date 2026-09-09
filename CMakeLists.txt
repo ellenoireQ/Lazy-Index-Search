@@ -27,3 +27,10 @@ target_link_libraries(
     PRIVATE 
     lis_lib     
 )
+
+enable_testing()
+
+add_executable(unit_tests src/tests/test_config.cpp)
+target_link_libraries(unit_tests PRIVATE lis_lib)
+
+add_test(NAME LisTest COMMAND unit_tests)
