@@ -1,8 +1,8 @@
+#include <includes/command.hpp>
+#include <includes/config.hpp>
+#include <includes/engine.hpp>
 #include <iostream>
 #include <string>
-#include <includes/command.hpp>
-#include <includes/engine.hpp>
-#include <includes/config.hpp>
 
 int main(int argc, char *argv[])
 {

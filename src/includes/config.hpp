@@ -1,8 +1,8 @@
 #ifndef CONFIG_HPP
 #define CONFIG_HPP
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
 class Config
 {

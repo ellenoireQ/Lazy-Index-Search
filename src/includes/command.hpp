@@ -1,9 +1,10 @@
 #ifndef COMMAND_HEADER_HPP
 #define COMMAND_HEADER_HPP
 
+#include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 enum Command
 {
@@ -64,12 +65,12 @@ static std::string parseKeyValue(const std::string &arg, const std::string &key)
     if (arg.find(key + "=") == 0)
     {
         std::string value = arg.substr(key.length() + 1);
-        
+
         if (value.length() >= 2 && value.front() == '"' && value.back() == '"')
         {
             value = value.substr(1, value.length() - 2);
         }
-        
+
         return value;
     }
     return "";

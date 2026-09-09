@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
-#include <includes/engine.hpp>
-#include <includes/config.hpp>
 #include <filesystem>
 #include <fstream>
+#include <includes/config.hpp>
+#include <includes/engine.hpp>
 
 TEST_CASE("Engine search returns the matching file", "[engine]")
 {
@@ -50,4 +50,3 @@ TEST_CASE("Engine search returns no result for a missing directory", "[engine]")
 
     REQUIRE_FALSE(engine::search(missing, "file.cpp", config, std::nullopt).has_value());
 }
-

@@ -1,5 +1,5 @@
-#include <includes/find.hpp>
 #include <fstream>
+#include <includes/find.hpp>
 
 /**
  * @param tgetf Target file name

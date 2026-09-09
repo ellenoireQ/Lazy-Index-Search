@@ -1,12 +1,12 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include <filesystem>
 #include <algorithm>
+#include <filesystem>
 #include <iostream>
-#include <vector>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include <includes/config.hpp>
 
@@ -27,5 +27,5 @@ namespace engine
     {
         it.disable_recursion_pending();
     }
-}
+} // namespace engine
 #endif // ENGINE_HPP

@@ -1,7 +1,7 @@
-#include <includes/engine.hpp>
 #include <functional>
-#include <system_error>
+#include <includes/engine.hpp>
 #include <includes/log.hpp>
+#include <system_error>
 
 std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path)
 {
