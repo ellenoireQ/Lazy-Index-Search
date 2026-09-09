@@ -3,14 +3,14 @@
 #include <system_error>
 #include <includes/log.hpp>
 
-void engine::search(const fs::path &directory, const fs::path &file_name)
+std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name)
 {
     std::error_code ec;
 
     if (!fs::exists(directory, ec) || !fs::is_directory(directory, ec))
     {
         std::cout << "Directory not found: " << directory << std::endl;
-        return;
+        return std::nullopt;
     }
 
     auto it = fs::recursive_directory_iterator(directory, fs::directory_options::skip_permission_denied, ec);
@@ -24,7 +24,7 @@ void engine::search(const fs::path &directory, const fs::path &file_name)
         if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
         {
             LOG(CLR_RED, current);
-            return;
+            return current;
         }
         else
         {
@@ -43,6 +43,8 @@ void engine::search(const fs::path &directory, const fs::path &file_name)
     {
         std::cout << path << std::endl;
     }
+
+    return std::nullopt;
 }
 
 std::vector<fs::path> engine::_sort_path(const fs::path &p)
