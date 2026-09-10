@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(lis_lib STATIC 
-    "src/find.cpp"
     "src/engine.cpp"
     "src/config.cpp"
     "src/task.cpp"
