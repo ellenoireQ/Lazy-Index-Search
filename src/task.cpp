@@ -1,5 +1,14 @@
+#include "includes/engine.hpp"
 #include <includes/log.hpp>
 #include <includes/task.hpp>
+
+void Task::run(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path)
+{
+    /**
+     * TODO: Implement this!
+     */
+    engine::search(directory, file_name, config, exclude_path);
+}
 
 void Task::mark(std::string path, TaskQueue tsk)
 {

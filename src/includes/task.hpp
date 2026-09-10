@@ -2,9 +2,12 @@
 #define TASK_HPP
 
 #include <filesystem>
+#include <includes/config.hpp>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace fs = std::filesystem;
 
@@ -22,6 +25,7 @@ private:
     std::unordered_map<std::string, TaskQueue> task;
 
 public:
+    void run(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path);
     void mark(std::string path, TaskQueue tsk);
     TaskQueue get_status(std::string path);
     void spawn();

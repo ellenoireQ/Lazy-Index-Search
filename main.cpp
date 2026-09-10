@@ -1,3 +1,4 @@
+#include "includes/task.hpp"
 #include <includes/command.hpp>
 #include <includes/config.hpp>
 #include <includes/engine.hpp>
@@ -18,16 +19,17 @@ int main(int argc, char *argv[])
     switch (args.command)
     {
     case FIND:
+    {
         if (args.query.empty())
         {
             std::cout << "Error: Missing search query.\n\n";
             displayHelp(argv[0]);
             return 1;
         }
-
-        engine::search(args.searchPath, args.query, config, args.excludePaths);
+        Task task;
+        task.run(args.searchPath, args.query, config, args.excludePaths);
         return 0;
-
+    }
     case HELP:
         displayHelp(argv[0]);
         return 0;
