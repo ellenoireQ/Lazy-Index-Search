@@ -30,15 +30,8 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
     {
         std::error_code entry_ec;
         const auto current = it->path();
-        switch (tsk.get_status(current))
-        {
-        case TaskQueue::Process:
-            // Do something
-        case TaskQueue::Pending:
-            // Do something
-        case TaskQueue::Done:
-            LOG(CLR_YELLOW, "Processed: " + current.string());
-        }
+        
+        tsk.process_task(current);
 
         if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
         {

@@ -1,3 +1,4 @@
+#include <includes/log.hpp>
 #include <includes/task.hpp>
 
 void Task::mark(std::string path, TaskQueue tsk)
@@ -18,4 +19,24 @@ TaskQueue Task::get_status(std::string path)
 
 void Task::spawn()
 {
+}
+
+/**
+ * Process task queue for a given path
+ * Handle the switch logic for task status
+ */
+void Task::process_task(const fs::path &current)
+{
+    switch (get_status(current))
+    {
+    case TaskQueue::Process:
+        // Do something
+        break;
+    case TaskQueue::Pending:
+        // Do something
+        break;
+    case TaskQueue::Done:
+        LOG(CLR_YELLOW, "Processed: " + current.string());
+        break;
+    }
 }
