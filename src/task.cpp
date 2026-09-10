@@ -7,6 +7,12 @@ void Task::run(const fs::path &directory, const fs::path &file_name, std::option
 {
     reset_stop();
     clear_results();
+    
+    {
+        std::lock_guard<std::mutex> guard(this->mutex_lock);
+        this->task.clear();
+    }
+    
     std::vector<fs::path> path;
     auto it = fs::directory_iterator(directory);
 
@@ -65,10 +71,8 @@ void Task::run(const fs::path &directory, const fs::path &file_name, std::option
 
 void Task::mark(const std::string& path, TaskQueue tsk)
 {
-    if (tsk == TaskQueue::Done) {
-        std::lock_guard<std::mutex> guard(this->mutex_lock);
-        this->task[path] = tsk;
-    }
+    std::lock_guard<std::mutex> guard(this->mutex_lock);
+    this->task[path] = tsk;
 }
 
 TaskQueue Task::get_status(const std::string& path)

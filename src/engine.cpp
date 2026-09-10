@@ -16,6 +16,15 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
         return std::nullopt;
     }
 
+    std::string dir_str = directory.string();
+    TaskQueue status = tsk.get_status(dir_str);
+    if (status == TaskQueue::Done)
+    {
+        return std::nullopt;
+    }
+
+    tsk.mark(dir_str, TaskQueue::Process);
+
     std::unordered_set<std::string> exclude_set;
     if (exclude_path.has_value()) {
         for (const auto& ex : exclude_path.value()) {
@@ -29,6 +38,7 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
         ec);
     
     if (ec) {
+        tsk.mark(dir_str, TaskQueue::Done);
         return std::nullopt;
     }
 
@@ -37,7 +47,10 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
     for (; it != end_it; ++it)
     {
         if (tsk.should_stop())
+        {
+            tsk.mark(dir_str, TaskQueue::Done);
             return std::nullopt;
+        }
 
         std::error_code entry_ec;
         const auto& current = it->path();
@@ -63,6 +76,8 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
             tsk.add_result(current);
         }
     }
+
+    tsk.mark(dir_str, TaskQueue::Done);
 
     return std::nullopt;
 }
