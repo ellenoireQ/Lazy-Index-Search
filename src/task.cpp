@@ -3,7 +3,7 @@
 #include <includes/task.hpp>
 #include <thread>
 
-void Task::run(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count)
+void Task::run(const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count)
 {
     /**
      * TODO: Implement this!
@@ -54,7 +54,6 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
                         *this,
                         path[j],
                         file_name,
-                        config,
                         exclude_path);
                 }
             });

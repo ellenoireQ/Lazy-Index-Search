@@ -9,8 +9,6 @@
 #include <string>
 #include <vector>
 
-#include <includes/config.hpp>
-
 namespace fs = std::filesystem;
 
 /**
@@ -20,8 +18,8 @@ namespace fs = std::filesystem;
  */
 namespace engine
 {
-    std::optional<fs::path> search(Task &tsk, const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path);
-    std::optional<fs::path> search(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path);
+    std::optional<fs::path> search(Task &tsk, const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path);
+    std::optional<fs::path> search(const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path);
     /**
      * Block the current directory iterator to skip recursion into it
      */

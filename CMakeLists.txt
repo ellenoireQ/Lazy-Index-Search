@@ -11,7 +11,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(lis_lib STATIC 
     "src/engine.cpp"
-    "src/config.cpp"
     "src/task.cpp"
 )
 
@@ -41,7 +40,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_executable(unit_tests
-    src/tests/test_config.cpp
     src/tests/test_engine.cpp)
 target_link_libraries(unit_tests PRIVATE lis_lib Catch2::Catch2WithMain)
 

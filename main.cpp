@@ -1,6 +1,5 @@
 #include "includes/task.hpp"
 #include <includes/command.hpp>
-#include <includes/config.hpp>
 #include <includes/engine.hpp>
 #include <iostream>
 #include <string>
@@ -8,7 +7,6 @@
 int main(int argc, char *argv[])
 {
     CommandArgs args = parseArguments(argc, argv);
-    Config config;
 
     if (argc < 2 || args.command == UNKNOWN)
     {
@@ -27,7 +25,7 @@ int main(int argc, char *argv[])
             return 1;
         }
         Task task;
-        task.run(args.searchPath, args.query, config, args.excludePaths, args.multithreading);
+        task.run(args.searchPath, args.query, args.excludePaths, args.multithreading);
         return 0;
     }
     case HELP:

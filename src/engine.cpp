@@ -4,7 +4,7 @@
 #include <includes/task.hpp>
 #include <system_error>
 
-std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path)
+std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path)
 {
     std::vector<fs::path> results;
     std::error_code ec;
@@ -87,8 +87,8 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
     return std::nullopt;
 }
 
-std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path)
+std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path)
 {
     Task task;
-    return search(task, directory, file_name, config, exclude_path);
+    return search(task, directory, file_name, exclude_path);
 }

@@ -3,7 +3,6 @@
 
 #include <atomic>
 #include <filesystem>
-#include <includes/config.hpp>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -27,7 +26,7 @@ private:
     std::atomic<bool> stop_requested{false};
 
 public:
-    void run(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count);
+    void run(const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count);
     void mark(std::string path, TaskQueue tsk);
     TaskQueue get_status(std::string path);
     void spawn();
