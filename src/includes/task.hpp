@@ -20,6 +20,7 @@ private:
 
 public:
     void mark(std::string path, TaskQueue tsk);
+    TaskQueue get_status(std::string path);
     void spawn();
 };
 #endif // TASK_HPP
