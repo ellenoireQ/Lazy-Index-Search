@@ -3,6 +3,7 @@
 #include <fstream>
 #include <includes/config.hpp>
 #include <includes/engine.hpp>
+#include <includes/task.hpp>
 
 TEST_CASE("Engine search returns the matching file", "[engine]")
 {
@@ -49,4 +50,18 @@ TEST_CASE("Engine search returns no result for a missing directory", "[engine]")
     Config config;
 
     REQUIRE_FALSE(engine::search(missing, "file.cpp", config, std::nullopt).has_value());
+}
+
+TEST_CASE("Task run completes with multiple workers", "[task]")
+{
+    const auto root = std::filesystem::temp_directory_path() / "lazy-index-search-task-test";
+    std::filesystem::remove_all(root);
+    std::filesystem::create_directories(root / "first");
+    std::filesystem::create_directories(root / "second");
+    Config config;
+    Task task;
+
+    task.run(root, "missing.cpp", config, std::nullopt, 2);
+
+    std::filesystem::remove_all(root);
 }
