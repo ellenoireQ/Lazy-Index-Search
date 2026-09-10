@@ -39,6 +39,8 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
 
             // marked as done
             tsk.mark(current, TaskQueue::Done);
+
+            return current;
         }
         else
         {

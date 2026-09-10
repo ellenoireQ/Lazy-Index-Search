@@ -1,6 +1,7 @@
 #include "includes/engine.hpp"
 #include <includes/log.hpp>
 #include <includes/task.hpp>
+#include <thread>
 
 void Task::run(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count)
 {
@@ -31,24 +32,38 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
     }
     for (const auto p : path)
     {
-        /**
-         * Divide task count
-         */
-        int right = path.size() / count.value_or(1);
-        int left = path.size() - right;
-        int total = right + left;
 
         // LOG(CLR_RED, total);
-        for (int i = 0; i < right; ++i)
+
+        int task_size = path.size() / count.value_or(1);
+
+        std::vector<std::thread> threads;
+
+        for (int i = 0; i < count.value_or(1); ++i)
         {
-            std::cout << "RIGHT: [" << path[i] << "]\n";
-            mark(path[i], TaskQueue::Process);
+            int start = i * task_size;
+            int end = start + task_size;
+
+            threads.emplace_back(
+                [&, start, end]()
+                {
+                    for (int j = start; j < end; ++j)
+                    {
+                        mark(path[j], TaskQueue::Process);
+
+                        engine::search(
+                            *this,
+                            path[j],
+                            file_name,
+                            config,
+                            exclude_path);
+                    }
+                });
         }
 
-        for (int i = right; i < path.size(); ++i)
+        for (auto &thread : threads)
         {
-            std::cout << "LEFT: [" << path[i] << "]\n";
-            mark(path[i], TaskQueue::Process);
+            thread.join();
         }
         // mark(p, TaskQueue::Process);
         //  engine::search(*this, p, file_name, config, exclude_path);
