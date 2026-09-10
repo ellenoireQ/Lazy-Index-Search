@@ -7,7 +7,18 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
     /**
      * TODO: Implement this!
      */
-    engine::search(directory, file_name, config, exclude_path);
+    std::vector<fs::path> path;
+    auto it = fs::directory_iterator(directory);
+
+    for (const auto &n : it)
+    {
+        path.push_back(n);
+    }
+    for (const auto p : path)
+    {
+        mark(p, TaskQueue::Process);
+        engine::search(*this, p, file_name, config, exclude_path);
+    }
 }
 
 void Task::mark(std::string path, TaskQueue tsk)

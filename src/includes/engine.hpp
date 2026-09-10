@@ -1,6 +1,7 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
+#include "includes/task.hpp"
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
@@ -19,6 +20,7 @@ namespace fs = std::filesystem;
  */
 namespace engine
 {
+    std::optional<fs::path> search(Task &tsk, const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path);
     std::optional<fs::path> search(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path);
     /**
      * Block the current directory iterator to skip recursion into it
