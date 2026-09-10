@@ -6,6 +6,7 @@
 void Task::run(const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count)
 {
     reset_stop();
+    clear_results();
     std::vector<fs::path> path;
     auto it = fs::directory_iterator(directory);
 
@@ -115,4 +116,22 @@ void Task::request_stop()
 bool Task::should_stop() const
 {
     return stop_requested.load();
+}
+
+void Task::add_result(const fs::path& path)
+{
+    std::lock_guard<std::mutex> guard(results_mutex);
+    results.push_back(path);
+}
+
+std::vector<fs::path> Task::get_results() const
+{
+    std::lock_guard<std::mutex> guard(results_mutex);
+    return results;
+}
+
+void Task::clear_results()
+{
+    std::lock_guard<std::mutex> guard(results_mutex);
+    results.clear();
 }

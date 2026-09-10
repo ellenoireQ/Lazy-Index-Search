@@ -24,6 +24,8 @@ private:
     std::mutex mutex_lock;
     std::unordered_map<std::string, TaskQueue> task;
     std::atomic<bool> stop_requested{false};
+    mutable std::mutex results_mutex;
+    std::vector<fs::path> results;
 
 public:
     void run(const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count);
@@ -34,6 +36,9 @@ public:
     void reset_stop();
     void request_stop();
     bool should_stop() const;
+    void add_result(const fs::path& path);
+    std::vector<fs::path> get_results() const;
+    void clear_results();
     
     inline void mark_processed() { /* No-op for optimization */ }
     inline bool is_processing(const std::string&) { return false; }

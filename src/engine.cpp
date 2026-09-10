@@ -59,9 +59,8 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
 
         if (is_regular && current.filename() == file_name)
         {
-            tsk.request_stop();
             LOG(CLR_RED, current);
-            return current;
+            tsk.add_result(current);
         }
     }
 
