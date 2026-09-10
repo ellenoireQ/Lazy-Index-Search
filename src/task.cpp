@@ -10,9 +10,24 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
     std::vector<fs::path> path;
     auto it = fs::directory_iterator(directory);
 
+    std::vector<std::string> nulls;
     for (const auto &n : it)
     {
-        path.push_back(n);
+        bool excluded = false;
+
+        for (const auto &ex_path : exclude_path.value_or(nulls))
+        {
+            if (n.path() == ex_path)
+            {
+                excluded = true;
+                break;
+            }
+        }
+
+        if (excluded)
+            continue;
+
+        path.push_back(n.path());
     }
     for (const auto p : path)
     {
