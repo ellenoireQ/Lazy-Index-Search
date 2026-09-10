@@ -16,8 +16,27 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
     }
     for (const auto p : path)
     {
-        mark(p, TaskQueue::Process);
-        engine::search(*this, p, file_name, config, exclude_path);
+        /**
+         * Divide task count
+         */
+        int right = path.size() / 2;
+        int left = path.size() - right;
+        int total = right + left;
+
+        // LOG(CLR_RED, total);
+        for (int i = 0; i < right; ++i)
+        {
+            std::cout << "RIGHT: [" << path[i] << "]\n";
+            mark(path[i], TaskQueue::Process);
+        }
+
+        for (int i = right; i < path.size(); ++i)
+        {
+            std::cout << "LEFT: [" << path[i] << "]\n";
+            mark(path[i], TaskQueue::Process);
+        }
+        // mark(p, TaskQueue::Process);
+        //  engine::search(*this, p, file_name, config, exclude_path);
     }
 }
 
