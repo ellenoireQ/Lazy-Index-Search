@@ -2,7 +2,7 @@
 #include <includes/log.hpp>
 #include <includes/task.hpp>
 
-void Task::run(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path)
+void Task::run(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count)
 {
     /**
      * TODO: Implement this!
@@ -34,7 +34,7 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
         /**
          * Divide task count
          */
-        int right = path.size() / 2;
+        int right = path.size() / count.value_or(1);
         int left = path.size() - right;
         int total = right + left;
 

@@ -19,6 +19,7 @@ struct CommandArgs
     std::string query;
     std::string searchPath = "/";
     std::vector<std::string> excludePaths;
+    int multithreading = 0;
 };
 
 /**
@@ -138,6 +139,13 @@ static CommandArgs parseArguments(int argc, char *argv[])
             if (!value.empty())
             {
                 args.excludePaths = splitString(value, ',');
+            }
+        }
+        else if (arg == "--enable-multithread")
+        {
+            if (i + 1 < argc)
+            {
+                args.multithreading = std::stoi(argv[++i]);
             }
         }
     }

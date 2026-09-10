@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
             return 1;
         }
         Task task;
-        task.run(args.searchPath, args.query, config, args.excludePaths);
+        task.run(args.searchPath, args.query, config, args.excludePaths, args.multithreading);
         return 0;
     }
     case HELP:
