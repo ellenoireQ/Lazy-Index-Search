@@ -31,12 +31,9 @@ void Task::process_task(const fs::path &current)
     {
     case TaskQueue::Process:
         // Do something
-        break;
     case TaskQueue::Pending:
         // Do something
-        break;
     case TaskQueue::Done:
         LOG(CLR_YELLOW, "Processed: " + current.string());
-        break;
     }
 }
