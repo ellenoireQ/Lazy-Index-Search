@@ -6,84 +6,65 @@
 
 std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path)
 {
-    std::vector<fs::path> results;
     std::error_code ec;
+
+    if (tsk.should_stop())
+        return std::nullopt;
 
     if (!fs::exists(directory, ec) || !fs::is_directory(directory, ec))
     {
-        std::cout << "Directory not found: " << directory << std::endl;
         return std::nullopt;
     }
 
-    auto it = fs::recursive_directory_iterator(directory, fs::directory_options::skip_permission_denied, ec);
+    std::unordered_set<std::string> exclude_set;
+    if (exclude_path.has_value()) {
+        for (const auto& ex : exclude_path.value()) {
+            exclude_set.insert(ex);
+        }
+    }
+
+    auto it = fs::recursive_directory_iterator(
+        directory, 
+        fs::directory_options::skip_permission_denied, 
+        ec);
+    
+    if (ec) {
+        return std::nullopt;
+    }
+
     auto end_it = fs::recursive_directory_iterator();
 
-    for (; it != end_it && !tsk.should_stop(); ++it)
+    for (; it != end_it; ++it)
     {
-        std::error_code entry_ec;
-        const auto current = it->path();
-
-        /**
-         * @current passes current path
-         * @block blocking iterate to the folder
-         *
-         * Current method using unordered_map, something like
-         * <current, TaskQueue::Done> <= identified as done because in this iterate will be processed
-         */
-        tsk.process_task(current);
-
         if (tsk.should_stop())
-            break;
+            return std::nullopt;
 
-        if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
+        std::error_code entry_ec;
+        const auto& current = it->path();
+
+        if (!exclude_set.empty() && exclude_set.count(current.string()) > 0)
         {
-            results.push_back(current);
-            tsk.request_stop();
-
-            // marked as done
-            tsk.mark(current, TaskQueue::Done);
-
-            break;
-        }
-        else
-        {
-
-            std::vector<std::string> nulls;
-            for (const auto &ex_path : exclude_path.value_or(nulls))
-            {
-                if (current == ex_path)
-                {
-                    // marked as done
-                    tsk.mark(current, TaskQueue::Done);
-
-                    block(it);
-                    continue;
-                }
-            }
-            // LOG(CLR_WHITE, current);
-            // marked as done
-            tsk.mark(current, TaskQueue::Done);
+            block(it);
+            continue;
         }
 
+        bool is_regular = fs::is_regular_file(current, entry_ec);
+        
         if (entry_ec)
         {
             entry_ec.clear();
             block(it);
+            continue;
+        }
+
+        if (is_regular && current.filename() == file_name)
+        {
+            tsk.request_stop();
+            LOG(CLR_RED, current);
+            return current;
         }
     }
 
-    /**
-     * Iterate results
-     */
-    for (auto res : results)
-    {
-        LOG(CLR_RED, res);
-    }
-
-    if (!results.empty())
-    {
-        return results.front();
-    }
     return std::nullopt;
 }
 

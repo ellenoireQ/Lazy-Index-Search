@@ -19,7 +19,7 @@ struct CommandArgs
     std::string query;
     std::string searchPath = "/";
     std::vector<std::string> excludePaths;
-    int multithreading = 0;
+    int multithreading = 4;
 };
 
 /**
@@ -163,8 +163,9 @@ static void displayHelp(const std::string &programName)
     std::cout << "  --find, -f <query>      Search for files matching query\n";
     std::cout << "  --help, -h              Display this help message\n\n";
     std::cout << "Options:\n";
-    std::cout << "  --path, -p <path>              Set search path (default: /)\n";
-    std::cout << "  --exclude-path=\"path1,path2\"   Exclude paths from search (comma-separated)\n";
+    std::cout << "  --path, -p <path>                 Set search path (default: /)\n";
+    std::cout << "  --exclude-path=\"path1,path2\"      Exclude paths from search (comma-separated)\n";
+    std::cout << "  --enable-multithread <N>          Use N threads (default: 4)\n\n";
     std::cout << "Examples:\n";
     std::cout << "  " << programName << " --find file.cpp\n";
     std::cout << "  " << programName << " --find file.cpp --path /usr\n";

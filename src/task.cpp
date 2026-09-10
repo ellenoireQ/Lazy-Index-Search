@@ -5,9 +5,6 @@
 
 void Task::run(const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count)
 {
-    /**
-     * TODO: Implement this!
-     */
     reset_stop();
     std::vector<fs::path> path;
     auto it = fs::directory_iterator(directory);
@@ -31,7 +28,9 @@ void Task::run(const fs::path &directory, const fs::path &file_name, std::option
 
         path.push_back(n.path());
     }
-    const int worker_count = std::max(1, std::min(count.value_or(1), static_cast<int>(path.size())));
+    
+    const int default_threads = std::max(1u, std::thread::hardware_concurrency());
+    const int worker_count = std::max(1, std::min(count.value_or(default_threads), static_cast<int>(path.size())));
     const int task_size = (static_cast<int>(path.size()) + worker_count - 1) / worker_count;
     std::vector<std::thread> threads;
 
@@ -48,8 +47,6 @@ void Task::run(const fs::path &directory, const fs::path &file_name, std::option
                     if (should_stop())
                         break;
 
-                    mark(path[j], TaskQueue::Process);
-
                     engine::search(
                         *this,
                         path[j],
@@ -65,20 +62,23 @@ void Task::run(const fs::path &directory, const fs::path &file_name, std::option
     }
 }
 
-void Task::mark(std::string path, TaskQueue tsk)
+void Task::mark(const std::string& path, TaskQueue tsk)
 {
-    std::lock_guard<std::mutex> guard(this->mutex_lock);
-    this->task[path] = tsk;
+    if (tsk == TaskQueue::Done) {
+        std::lock_guard<std::mutex> guard(this->mutex_lock);
+        this->task[path] = tsk;
+    }
 }
 
-TaskQueue Task::get_status(std::string path)
+TaskQueue Task::get_status(const std::string& path)
 {
     std::lock_guard<std::mutex> guard(this->mutex_lock);
-    if (this->task.find(path) == this->task.end())
+    auto it = this->task.find(path);
+    if (it == this->task.end())
     {
-        this->task[path] = TaskQueue::Pending;
+        return TaskQueue::Pending;
     }
-    return this->task[path];
+    return it->second;
 }
 
 void Task::spawn()

@@ -27,12 +27,15 @@ private:
 
 public:
     void run(const fs::path &directory, const fs::path &file_name, std::optional<std::vector<std::string>> exclude_path, std::optional<int> count);
-    void mark(std::string path, TaskQueue tsk);
-    TaskQueue get_status(std::string path);
+    void mark(const std::string& path, TaskQueue tsk);
+    TaskQueue get_status(const std::string& path);
     void spawn();
     void process_task(const fs::path &current);
     void reset_stop();
     void request_stop();
     bool should_stop() const;
+    
+    inline void mark_processed() { /* No-op for optimization */ }
+    inline bool is_processing(const std::string&) { return false; }
 };
 #endif // TASK_HPP
