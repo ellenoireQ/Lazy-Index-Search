@@ -18,34 +18,35 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
     auto it = fs::recursive_directory_iterator(directory, fs::directory_options::skip_permission_denied, ec);
     auto end_it = fs::recursive_directory_iterator();
 
+    /**
+     * @current passes current path
+     * @block blocking iterate to the folder
+     *
+     * Current method using unordered_map, something like
+     * <current, TaskQueue::Done> <= identified as done because in this iterate will be processed
+     */
+    Task tsk;
     for (; it != end_it; ++it)
     {
         std::error_code entry_ec;
         const auto current = it->path();
-        /**
-         * @current passes current path
-         * @block blocking iterate to the folder
-         *
-         * Current method using unordered_map, something like
-         * <current, TaskQueue::Done> <= identified as done because in this iterate will be processed
-         */
-        Task tsk;
+        switch (tsk.get_status(current))
+        {
+        case TaskQueue::Process:
+            // Do something
+        case TaskQueue::Pending:
+            // Do something
+        case TaskQueue::Done:
+            LOG(CLR_YELLOW, "Processed: " + current.string());
+        }
 
         if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
         {
-            LOG(CLR_RED, current);
+            // LOG(CLR_RED, current);
             results.push_back(current);
 
             // marked as done
             tsk.mark(current, TaskQueue::Done);
-
-            if (it == end_it || results.size() <= 2)
-            {
-                // marked as done
-                tsk.mark(current, TaskQueue::Done);
-
-                return current;
-            }
         }
         else
         {
@@ -62,7 +63,7 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
                     continue;
                 }
             }
-            LOG(CLR_WHITE, current);
+            // LOG(CLR_WHITE, current);
             // marked as done
             tsk.mark(current, TaskQueue::Done);
         }
@@ -80,6 +81,11 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
     for (auto res : results)
     {
         LOG(CLR_RED, res);
+    }
+
+    if (!results.empty())
+    {
+        return results.front();
     }
     return std::nullopt;
 }
