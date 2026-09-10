@@ -13,6 +13,7 @@ add_library(lis_lib STATIC
     "src/find.cpp"
     "src/engine.cpp"
     "src/config.cpp"
+    "src/task.cpp"
 )
 
 

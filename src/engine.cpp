@@ -1,6 +1,7 @@
 #include <functional>
 #include <includes/engine.hpp>
 #include <includes/log.hpp>
+#include <includes/task.hpp>
 #include <system_error>
 
 std::optional<fs::path> engine::search(const fs::path &directory, const fs::path &file_name, Config &config, std::optional<std::vector<std::string>> exclude_path)
@@ -21,14 +22,28 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
     {
         std::error_code entry_ec;
         const auto current = it->path();
+        /**
+         * @current passes current path
+         * @block blocking iterate to the folder
+         *
+         * Current method using unordered_map, something like
+         * <current, TaskQueue::Done> <= identified as done because in this iterate will be processed
+         */
+        Task tsk;
 
         if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
         {
             LOG(CLR_RED, current);
             results.push_back(current);
 
+            // marked as done
+            tsk.mark(current, TaskQueue::Done);
+
             if (it == end_it || results.size() <= 2)
             {
+                // marked as done
+                tsk.mark(current, TaskQueue::Done);
+
                 return current;
             }
         }
@@ -40,11 +55,16 @@ std::optional<fs::path> engine::search(const fs::path &directory, const fs::path
             {
                 if (current == ex_path)
                 {
+                    // marked as done
+                    tsk.mark(current, TaskQueue::Done);
+
                     block(it);
                     continue;
                 }
             }
             LOG(CLR_WHITE, current);
+            // marked as done
+            tsk.mark(current, TaskQueue::Done);
         }
 
         if (entry_ec)
