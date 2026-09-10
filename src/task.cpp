@@ -8,6 +8,7 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
     /**
      * TODO: Implement this!
      */
+    reset_stop();
     std::vector<fs::path> path;
     auto it = fs::directory_iterator(directory);
 
@@ -44,6 +45,9 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
             {
                 for (int j = start; j < end; ++j)
                 {
+                    if (should_stop())
+                        break;
+
                     mark(path[j], TaskQueue::Process);
 
                     engine::search(
@@ -97,4 +101,19 @@ void Task::process_task(const fs::path &current)
     case TaskQueue::Done:
         LOG(CLR_YELLOW, "Processed: " + current.string());
     }
+}
+
+void Task::reset_stop()
+{
+    stop_requested.store(false);
+}
+
+void Task::request_stop()
+{
+    stop_requested.store(true);
+}
+
+bool Task::should_stop() const
+{
+    return stop_requested.load();
 }

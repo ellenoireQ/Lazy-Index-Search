@@ -18,7 +18,7 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
     auto it = fs::recursive_directory_iterator(directory, fs::directory_options::skip_permission_denied, ec);
     auto end_it = fs::recursive_directory_iterator();
 
-    for (; it != end_it; ++it)
+    for (; it != end_it && !tsk.should_stop(); ++it)
     {
         std::error_code entry_ec;
         const auto current = it->path();
@@ -32,15 +32,18 @@ std::optional<fs::path> engine::search(Task &tsk, const fs::path &directory, con
          */
         tsk.process_task(current);
 
+        if (tsk.should_stop())
+            break;
+
         if (fs::is_regular_file(current, entry_ec) && current.filename() == file_name)
         {
-            // LOG(CLR_RED, current);
             results.push_back(current);
+            tsk.request_stop();
 
             // marked as done
             tsk.mark(current, TaskQueue::Done);
 
-            return current;
+            break;
         }
         else
         {
