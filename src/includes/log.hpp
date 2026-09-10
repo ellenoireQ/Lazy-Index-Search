@@ -1,3 +1,5 @@
+#include <iostream>
+
 #define CLR_RESET "\033[0m"
 #define CLR_RED "\033[1;31m"
 #define CLR_GREEN "\033[1;32m"
