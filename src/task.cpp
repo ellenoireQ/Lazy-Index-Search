@@ -30,43 +30,35 @@ void Task::run(const fs::path &directory, const fs::path &file_name, Config &con
 
         path.push_back(n.path());
     }
-    for (const auto p : path)
+    const int worker_count = std::max(1, std::min(count.value_or(1), static_cast<int>(path.size())));
+    const int task_size = (static_cast<int>(path.size()) + worker_count - 1) / worker_count;
+    std::vector<std::thread> threads;
+
+    for (int i = 0; i < worker_count; ++i)
     {
+        const int start = i * task_size;
+        const int end = std::min(start + task_size, static_cast<int>(path.size()));
 
-        // LOG(CLR_RED, total);
-
-        int task_size = path.size() / count.value_or(1);
-
-        std::vector<std::thread> threads;
-
-        for (int i = 0; i < count.value_or(1); ++i)
-        {
-            int start = i * task_size;
-            int end = start + task_size;
-
-            threads.emplace_back(
-                [&, start, end]()
+        threads.emplace_back(
+            [&, start, end]()
+            {
+                for (int j = start; j < end; ++j)
                 {
-                    for (int j = start; j < end; ++j)
-                    {
-                        mark(path[j], TaskQueue::Process);
+                    mark(path[j], TaskQueue::Process);
 
-                        engine::search(
-                            *this,
-                            path[j],
-                            file_name,
-                            config,
-                            exclude_path);
-                    }
-                });
-        }
+                    engine::search(
+                        *this,
+                        path[j],
+                        file_name,
+                        config,
+                        exclude_path);
+                }
+            });
+    }
 
-        for (auto &thread : threads)
-        {
-            thread.join();
-        }
-        // mark(p, TaskQueue::Process);
-        //  engine::search(*this, p, file_name, config, exclude_path);
+    for (auto &thread : threads)
+    {
+        thread.join();
     }
 }
 
